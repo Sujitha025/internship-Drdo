@@ -11,28 +11,40 @@ import styles from '../styles/Username.module.css'
 
 
 export const Register = () => {
-  const navigate = useNavigate()
-  const [file,setFile] = useState();
+  const navigate = useNavigate();
+  const [file, setFile] = useState();
   const formik = useFormik({
-    initialValues : {
-      email:'',
-      username:'',
+    initialValues: {
+      email: '',
+      username: '',
       password: '',
     },
     validate: registerValidation,
     validateOnBlur: false,
     validateOnChange: false,
-    onSubmit : async values => {
-      values  = await Object.assign(values,{profile: file || ''});
-      let registerPromise = registerUser(values)
-      toast.promise(registerPromise,{
-        loading: 'Creating...',
-        success: <b>Register Successfully..!</b>,
-        error : <b>Could not Register</b>
-      });
-      registerPromise.then(() => {navigate('/')});
-    }
+    onSubmit: async (values) => {
+      values = await Object.assign(values, { profile: file || '' });
+      let registerPromise = registerUser(values);
+      registerPromise
+  .then((response) => {
+    toast.success(response);
+     setTimeout(() => {
+      navigate('/');
+    }, 1000);
   })
+  .catch((error) => {
+    toast.error(error.message); // Display the error message
+  });
+    },
+  });
+      // toast.promise(registerPromise,{
+      //   loading: 'Creating...',
+      //   success: <b>Register Successfully..!</b>,
+      //   error : <b>Could not Register</b>
+      // });
+      // registerPromise.then(() => {navigate('/')});
+   //}
+  //})
   const onUpload = async (e) => {
     const base64 = await convertToBase64(e.target.files[0]); //pic is in e.target.files[0]
     console.log(e.target)

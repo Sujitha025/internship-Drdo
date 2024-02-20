@@ -2,10 +2,10 @@ import React, { useState,useEffect } from 'react';
 import toast,{Toaster} from 'react-hot-toast';
 import styles from '../styles/Username.module.css'
 import { useAuthStore } from '../store/store';
-import { generateOTP } from '../helper/helper';
+import { generateOTP, getUser } from '../helper/helper';
 import { verifyOTP } from '../helper/helper';
 import { useNavigate } from 'react-router-dom';
-
+import emailjs from '@emailjs/browser';
 
 
 export const Recovery = () => {
@@ -15,13 +15,51 @@ export const Recovery = () => {
   const [OTP,setOTP] = useState();
   const navigate = useNavigate(); 
 
+  // async function details(){
+  //   const data = await getUser(username);
+  //   console.log(data);
+  // }
   useEffect(() => {
     generateOTP(username).then((OTP) => {
-      console.log(OTP);
-      if(OTP) return toast.success('OTP has been send to your email!');
-      return toast.error('Problem while generating the otp')
-    })
-  },[username])
+        if (OTP) {
+            getUser({ username }).then(({ data, error }) => {
+                if (data) {
+                    // User data retrieved successfully
+                    console.log(data);
+                    // Prepare the email data
+                    const emailData = {
+                        to_name: data.username,
+                        text: `Your OTP is ${OTP}`,
+                        to_email: data.email,
+                        from_email: 'lakshmisujitha34@gmail.com'
+                    };
+                    // Send the email using emailjs
+                    emailjs
+                        .send(process.env.REACT_APP_SERVICE_ID, process.env.REACT_APP_TEMPLATE_ID2, emailData, {
+                            publicKey: process.env.REACT_APP_PUBLIC_KEY,
+                        })
+                        .then(
+                            () => {
+                                console.log('Email sent successfully!');
+                                toast.success('Email sent successfully!');
+                            },
+                            (error) => {
+                                console.log('Failed to send email:', error.text);
+                                toast.error('Failed to send email');
+                            },
+                        );
+                } else {
+                    // Error occurred while retrieving user data
+                    console.error(error);
+                    toast.error('Error while retrieving user data');
+                }
+            });
+            return toast.success('OTP has been sent to your email!');
+        } else {
+            return toast.error('Problem while generating the OTP');
+        }
+    });
+}, [username]);
 
   async function onSubmit(e){
     e.preventDefault();

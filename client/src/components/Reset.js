@@ -35,7 +35,7 @@ export const Reset = () => {
   })
 
   if(isLoading) return <h1 className='text-2xl font-bold'>isLoading</h1>;
-  if(serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
+  //if(serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
   if(status && status !== 201) return <Navigate to={'/password'} replace={true}></Navigate>
 
   return (

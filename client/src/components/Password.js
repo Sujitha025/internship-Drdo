@@ -22,21 +22,31 @@ export const Password = () => {
     validate : passwordValidate,
     validateOnBlur: false,
     validateOnChange: false,
-    onSubmit : async values => {
-      
-      let loginPromise = verifyPassword({ username, password : values.password })
+    onSubmit: async values => {
+      let loginPromise = verifyPassword({ username, password: values.password });
+    
+      // Using toast.promise to handle the promise
       toast.promise(loginPromise, {
         loading: 'Checking...',
-        success : <b>Login Successfully...!</b>,
-        error : <b>Password Not Match!</b>
-      });
+        success: <b>Login Successfully...!</b>,
+        error: <b>Password Not Match!</b>
+      }).then(res => {
+        if (res && res.data) {
+          let { token } = res.data;
+          localStorage.setItem('token', token);
+          //navigate('/profile')
+          navigate('/home');
+        }
+      }).catch(error => {
 
-      loginPromise.then(res => {
-        let { token } = res.data;
-        localStorage.setItem('token', token);
-        //navigate('/profile')
-        navigate('/home');
-      })
+        console.error('Failed to verify password:', error);
+        
+        if (error.response && error.response.data && error.response.data.error) {
+          toast.error(error.response.data.error);
+        } else {
+          console.log('Failed to verify password');
+        }
+      });
     }
   })
 

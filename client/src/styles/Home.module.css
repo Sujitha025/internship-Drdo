@@ -1,0 +1,19 @@
+
+.container {
+    display: flex;
+    @apply bg-white  text-black py-16;
+  }
+  
+  .titleContainer {
+    
+    flex: 1;
+    @apply mt-7 py-4;
+  }
+  
+  .imageContainer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+

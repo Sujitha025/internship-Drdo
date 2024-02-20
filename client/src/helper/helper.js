@@ -35,20 +35,25 @@ export async function getUser({ username }){
 /** register user function */
 export async function registerUser(credentials){
     try {
-        const { data : { msg }, status } = await axios.post(`/api/register`, credentials);
+        const response = await axios.post('/api/register', credentials);
 
-        let { username, email } = credentials;
-
-        /** send email */
-        if(status === 201){
-            await axios.post('/api/registerMail', { username, userEmail : email, text : msg})
+        if (response.status === 201) {
+            const { msg } = response.data;
+            return msg;
+        } else {
+            throw new Error(response.data.error || "Could not register");
         }
-
-        return Promise.resolve(msg)
     } catch (error) {
-        return Promise.reject({ error })
+        // Check if the error response contains error message
+        if (error.response && error.response.data && error.response.data.error) {
+            throw new Error(error.response.data.error);
+        } else {
+            throw new Error("An error occurred while registering. Please try again later.");
+        }
     }
 }
+
+
 
 /** login function */
 export async function verifyPassword({ username, password }){
@@ -110,3 +115,12 @@ export async function resetPassword({ username, password }){
         return Promise.reject({ error })
     }
 }
+export async function saveRecordedVideo({videoData,userData}) {
+    try {
+       console.log(videoData);
+      const response = await axios.post('/api/savevideo', { recordedVideo:videoData, userData });
+      return response.data;
+    } catch (error) {
+      return { error: 'Failed to save recorded video' };
+    }
+  }

@@ -68,10 +68,10 @@ export const Profile = () => {
         <div className={`${styles.glass} ${extend.glass}`} style={{ width: "45%", paddingTop: '3em'}}>
 
           <div className="title flex flex-col items-center">
-            <h4 className='text-5xl font-bold'>Profile</h4>
-            <span className='py-4 text-xl w-2/3 text-center text-gray-500'>
-                You can update the details.
-            </span>
+            <h4 className='text-5xl font-bold'>Your Profile</h4> 
+            {/* <span className='py-4 text-xl w-2/3 text-center text-gray-500'>
+                You can update your <span className='text-5xl font-bold'>Profile</span>.
+            </span> */}
           </div>
 
           <form className='py-1' onSubmit={formik.handleSubmit}>
