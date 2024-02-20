@@ -12,7 +12,7 @@ router.route('/register').post(controller.register) //register user
 router.route('/registerMail').post(registerMail); //sending mail
 router.route('/authenticate').post(controller.verifyUser,(req,res) => res.end()); //authenticate user
 router.route('/login').post(controller.verifyUser,controller.login); //login in app
-
+router.route('/savevideo').post(controller.savevideo)//video save
 /**GET Methods */
 router.route('/user/:username').get(controller.getUser); //user with username
 router.route('/generateOTP').get(controller.verifyUser,localVariables,controller.generateOTP); //generate random OTP
